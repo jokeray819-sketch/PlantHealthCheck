@@ -1,6 +1,7 @@
 @page "/"
 @using Microsoft.AspNetCore.Components.Forms
 @inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
 
 <PageTitle>AI植物健康检测平台</PageTitle>
 
@@ -180,11 +181,11 @@
                     <button class="bg-green-600 text-white px-8 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-all duration-300 text-lg" @onclick="StartDetection" disabled="@isDetecting">
                         @if (isDetecting)
                         {
-                            <i class="fa fa-spinner fa-spin mr-2"></i><text>检测中...</text>
+                            <span><i class="fa fa-spinner fa-spin mr-2"></i>检测中...</span>
                         }
                         else
                         {
-                            <i class="fa fa-search mr-2"></i><text>@(showDetectionResult ? "重新检测" : "开始检测")</text>
+                            <span><i class="fa fa-search mr-2"></i>@(showDetectionResult ? "重新检测" : "开始检测")</span>
                         }
                     </button>
                     <p class="text-gray-600 text-sm mt-3">
@@ -582,6 +583,7 @@
     private string? previewImageUrl;
     private bool showDetectionResult = false;
     private bool isDetecting = false;
+    private IJSObjectReference? jsModule;
 
     // Sample data for plants
     private List<PlantModel> plants = new List<PlantModel>
@@ -645,8 +647,11 @@
         isDetecting = false;
         StateHasChanged();
 
-        // Initialize chart
-        await JSRuntime.InvokeVoidAsync("initHealthScoreChart");
+        // Initialize chart using JS module
+        if (jsModule != null)
+        {
+            await jsModule.InvokeVoidAsync("initHealthScoreChart");
+        }
     }
 
     private async Task AddPlant()
@@ -658,51 +663,27 @@
     {
         if (firstRender)
         {
-            // Add smooth scroll behavior
-            await JSRuntime.InvokeVoidAsync("eval", @"
-                document.querySelectorAll('a[href^=""#""]').forEach(anchor => {
-                    anchor.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const targetId = this.getAttribute('href');
-                        const targetElement = document.querySelector(targetId);
-                        if (targetElement) {
-                            window.scrollTo({
-                                top: targetElement.offsetTop - 80,
-                                behavior: 'smooth'
-                            });
-                        }
-                    });
-                });
-            ");
+            try
+            {
+                // Import the JavaScript module
+                jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/app.js");
+                
+                // Initialize smooth scrolling
+                await jsModule.InvokeVoidAsync("initSmoothScroll");
+            }
+            catch (Exception)
+            {
+                // Fallback if module loading fails - can happen in some environments
+                // The functionality will be limited but the app will still work
+            }
+        }
+    }
 
-            // Add Chart.js initialization function
-            await JSRuntime.InvokeVoidAsync("eval", @"
-                window.initHealthScoreChart = function() {
-                    const ctx = document.getElementById('health-score-chart');
-                    if (ctx) {
-                        const score = 85;
-                        new Chart(ctx, {
-                            type: 'doughnut',
-                            data: {
-                                datasets: [{
-                                    data: [score, 100 - score],
-                                    backgroundColor: ['#4CAF50', '#E0E0E0'],
-                                    borderWidth: 0,
-                                    cutout: '80%'
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: true,
-                                plugins: {
-                                    legend: { display: false },
-                                    tooltip: { enabled: false }
-                                }
-                            }
-                        });
-                    }
-                }
-            ");
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (jsModule is not null)
+        {
+            await jsModule.DisposeAsync();
         }
     }
 
