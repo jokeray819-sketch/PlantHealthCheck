@@ -1,5 +1,49 @@
 ﻿@inherits LayoutComponentBase
 
+<!-- 顶部导航栏 -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-leaf text-green-600 text-2xl"></i>
+                <span class="text-xl font-bold text-gray-800">AI植物健康检测</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#my-plants" class="text-gray-800 hover:text-green-600 transition-colors">我的植物</a>
+                <a href="#health-detection" class="text-gray-800 hover:text-green-600 transition-colors">健康检测</a>
+                <a href="#knowledge" class="text-gray-800 hover:text-green-600 transition-colors">知识社区</a>
+                <a href="#shop" class="text-gray-800 hover:text-green-600 transition-colors">商城</a>
+                <a href="#member" class="text-gray-800 hover:text-green-600 transition-colors">会员中心</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="bg-green-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-opacity-90 transition-all duration-300 hidden md:block" onclick="document.getElementById('health-detection').scrollIntoView({behavior: 'smooth', block: 'start'});">
+                    <i class="fa fa-camera mr-2"></i>立即检测
+                </button>
+                <div class="relative">
+                    <img src="https://via.placeholder.com/40" alt="用户头像" class="w-10 h-10 rounded-full object-cover border-2 border-green-600">
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </div>
+                <button class="md:hidden text-gray-800 text-xl" id="mobile-menu-button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- 移动端菜单 -->
+    <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
+        <div class="container mx-auto px-4 py-2">
+            <a href="#my-plants" class="block py-3 text-gray-800 hover:text-green-600 transition-colors">我的植物</a>
+            <a href="#health-detection" class="block py-3 text-gray-800 hover:text-green-600 transition-colors">健康检测</a>
+            <a href="#knowledge" class="block py-3 text-gray-800 hover:text-green-600 transition-colors">知识社区</a>
+            <a href="#shop" class="block py-3 text-gray-800 hover:text-green-600 transition-colors">商城</a>
+            <a href="#member" class="block py-3 text-gray-800 hover:text-green-600 transition-colors">会员中心</a>
+            <button class="bg-green-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-opacity-90 transition-all duration-300 w-full mb-3" onclick="document.getElementById('health-detection').scrollIntoView({behavior: 'smooth', block: 'start'});">
+                <i class="fa fa-camera mr-2"></i>立即检测
+            </button>
+        </div>
+    </div>
+</nav>
+
 <div class="page">
     <main>
         <article class="content">
@@ -7,6 +51,71 @@
         </article>
     </main>
 </div>
+
+<!-- 底部导航栏 -->
+<footer class="bg-white border-t border-gray-200 py-8">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- 关于我们 -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">关于我们</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">公司介绍</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">团队成员</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">联系方式</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">加入我们</a></li>
+                </ul>
+            </div>
+            
+            <!-- 帮助中心 -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">帮助中心</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">使用指南</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">常见问题</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">意见反馈</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">隐私政策</a></li>
+                </ul>
+            </div>
+            
+            <!-- 商务合作 -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">商务合作</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">商家入驻</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">品牌合作</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">API授权</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-green-600 transition-colors">媒体报道</a></li>
+                </ul>
+            </div>
+            
+            <!-- 关注我们 -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">关注我们</h3>
+                <div class="flex space-x-4 mb-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-800 hover:bg-green-600 hover:text-white transition-colors">
+                        <i class="fa fa-weixin"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-800 hover:bg-green-600 hover:text-white transition-colors">
+                        <i class="fa fa-weibo"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-800 hover:bg-green-600 hover:text-white transition-colors">
+                        <i class="fa fa-qq"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-800 hover:bg-green-600 hover:text-white transition-colors">
+                        <i class="fa fa-envelope"></i>
+                    </a>
+                </div>
+                <p class="text-gray-600">客服热线: 400-123-4567</p>
+                <p class="text-gray-600">工作时间: 9:00-18:00</p>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-200 mt-8 pt-6 text-center">
+            <p class="text-gray-600">© 2025 AI植物健康检测平台 版权所有</p>
+        </div>
+    </div>
+</footer>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.

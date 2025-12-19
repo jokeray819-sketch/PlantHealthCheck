@@ -1,70 +1,745 @@
-﻿@page "/"
+@page "/"
 @using Microsoft.AspNetCore.Components.Forms
+@inject IJSRuntime JSRuntime
 
-<PageTitle>植物健康检测</PageTitle>
+<PageTitle>AI植物健康检测平台</PageTitle>
 
-<div class="plant-health-container">
-    <header class="main-header">
-        <h1 class="app-title">植物健康检测</h1>
-        <nav class="nav-buttons">
-            <button class="nav-btn purple">我的植物</button>
-            <button class="nav-btn blue">知识社区</button>
-            <button class="nav-btn light-blue">连接钱包</button>
-            <button class="nav-btn yellow">开通会员</button>
-            <button class="nav-btn grey">AI 生成</button>
-        </nav>
-    </header>
-
-    <div class="upload-section">
-        <div class="upload-box">
-            <div class="upload-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                    <circle cx="12" cy="13" r="4"></circle>
-                </svg>
+<!-- 主内容区域 -->
+<main class="container mx-auto px-4 py-8">
+    <!-- 欢迎横幅 -->
+    <section class="bg-gradient-to-r from-green-600 to-green-400 rounded-2xl p-8 mb-8 text-white">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="mb-6 md:mb-0">
+                <h1 class="text-3xl font-bold mb-2">欢迎使用 AI 植物健康检测平台</h1>
+                <p class="text-lg opacity-90 mb-4">让您的植物更健康，养护更轻松</p>
+                <button class="bg-white text-green-600 font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300" onclick="document.getElementById('health-detection').scrollIntoView({behavior: 'smooth', block: 'start'});">
+                    <i class="fa fa-camera mr-2"></i>开始检测
+                </button>
             </div>
-            <p class="upload-text">点击上传 或拖放植物照片</p>
-            <p class="upload-hint">支持 PNG, JPG 格式，图片越清晰，识别越准确</p>
-            <InputFile OnChange="HandleFileSelected" accept=".png,.jpg,.jpeg" class="file-input" />
+            <img src="https://via.placeholder.com/256x256?text=Plant" alt="植物检测" class="w-64 rounded-lg shadow-lg">
         </div>
-        <button class="detect-btn" @onclick="StartDetection">开始检测 (免费用户每日限1次)</button>
-    </div>
+    </section>
 
-    <div class="my-plants-section">
-        <h2 class="section-title">我的植物</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <h3 class="feature-title">植物档案</h3>
-                <p class="feature-description">记录您的每一株植物，包括它们的生长历程、健康状况和养护日志。</p>
+    <!-- 核心功能区 -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">核心功能</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- AI健康检测 -->
+            <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <div class="bg-green-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                    <i class="fa fa-heartbeat text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800">AI健康检测</h3>
+                <p class="text-gray-600 mb-4">上传植物照片，AI智能识别健康状况，提供专业诊断建议</p>
+                <a href="#health-detection" class="text-green-600 font-medium flex items-center">
+                    立即检测 <i class="fa fa-arrow-right ml-2"></i>
+                </a>
             </div>
-            <div class="feature-card">
-                <h3 class="feature-title">智能提醒</h3>
-                <p class="feature-description">根据植物种类和生长环境，智能提醒您浇水、施肥和修剪。</p>
+            
+            <!-- 我的植物 -->
+            <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <div class="bg-green-200 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                    <i class="fa fa-pagelines text-green-500 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800">我的植物</h3>
+                <p class="text-gray-600 mb-4">创建植物数字档案，记录生长过程，追踪健康历史</p>
+                <a href="#my-plants" class="text-green-500 font-medium flex items-center">
+                    查看植物 <i class="fa fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <!-- 智能提醒 -->
+            <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <div class="bg-orange-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                    <i class="fa fa-bell text-orange-500 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800">智能提醒</h3>
+                <p class="text-gray-600 mb-4">根据植物需求和环境条件，智能提醒浇水、施肥、修剪</p>
+                <a href="#reminders" class="text-orange-500 font-medium flex items-center">
+                    设置提醒 <i class="fa fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <!-- 知识社区 -->
+            <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <div class="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                    <i class="fa fa-comments text-blue-500 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800">知识社区</h3>
+                <p class="text-gray-600 mb-4">分享养护经验，提问求助，与其他植物爱好者交流</p>
+                <a href="#knowledge" class="text-blue-500 font-medium flex items-center">
+                    进入社区 <i class="fa fa-arrow-right ml-2"></i>
+                </a>
             </div>
         </div>
-    </div>
-</div>
+    </section>
+
+    <!-- AI健康检测模块 -->
+    <section id="health-detection" class="mb-12 scroll-mt-20">
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="p-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">AI植物健康检测</h2>
+                
+                <!-- 检测流程 -->
+                <div class="flex flex-col md:flex-row gap-8 mb-8">
+                    <!-- 左侧：上传/拍照区域 -->
+                    <div class="w-full md:w-1/2">
+                        <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center h-80 flex flex-col items-center justify-center bg-gray-50">
+                            @if (!string.IsNullOrEmpty(previewImageUrl))
+                            {
+                                <img src="@previewImageUrl" class="max-h-60 mb-4 rounded-lg" alt="预览图片">
+                            }
+                            else
+                            {
+                                <div class="text-center">
+                                    <i class="fa fa-cloud-upload text-4xl text-gray-400 mb-4"></i>
+                                    <p class="text-gray-600 mb-4">点击上传植物照片或拍照</p>
+                                    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                                        <label class="bg-green-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-opacity-90 transition-all duration-300 cursor-pointer">
+                                            <i class="fa fa-upload mr-2"></i>上传照片
+                                            <InputFile OnChange="HandleFileSelected" accept="image/*" class="hidden" />
+                                        </label>
+                                        <button class="bg-white text-green-600 border border-green-600 px-6 py-2 rounded-full shadow-sm hover:bg-green-600 hover:text-white transition-all duration-300" @onclick="TakePhoto">
+                                            <i class="fa fa-camera mr-2"></i>拍照
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    
+                    <!-- 右侧：检测结果预览 -->
+                    <div class="w-full md:w-1/2">
+                        @if (!showDetectionResult)
+                        {
+                            <div class="bg-gray-50 rounded-xl p-6 h-80 flex flex-col items-center justify-center text-center">
+                                <img src="https://via.placeholder.com/192x192?text=Health+Score" alt="健康评分示例" class="w-48 mb-4">
+                                <h3 class="text-xl font-semibold mb-2 text-gray-800">上传照片后查看检测结果</h3>
+                                <p class="text-gray-600">AI将分析植物健康状况，提供专业诊断和建议</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="bg-green-50 border border-green-200 rounded-xl p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-xl font-semibold text-gray-800">检测结果</h3>
+                                    <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">健康</span>
+                                </div>
+                                
+                                <!-- 健康评分 -->
+                                <div class="flex items-center justify-center mb-6">
+                                    <div class="relative w-40 h-40">
+                                        <canvas id="health-score-chart"></canvas>
+                                        <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                            <span class="text-4xl font-bold text-green-600">85</span>
+                                            <span class="text-sm text-gray-600">健康评分</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 植物信息 -->
+                                <div class="mb-6">
+                                    <h4 class="text-lg font-medium mb-3 text-gray-800">植物信息</h4>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600 mb-1">植物品种</p>
+                                            <p class="font-medium text-gray-800">薄荷 (Mentha)</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 mb-1">识别置信度</p>
+                                            <p class="font-medium text-gray-800">92%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 健康分析 -->
+                                <div>
+                                    <h4 class="text-lg font-medium mb-3 text-gray-800">健康分析</h4>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                            <span class="text-gray-800">叶片颜色正常，生长状况良好</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                            <span class="text-gray-800">无明显病虫害迹象</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                                            <span class="text-gray-800">土壤湿度略低，建议适当增加浇水频率</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                
+                <!-- 检测按钮 -->
+                <div class="text-center">
+                    <button class="bg-green-600 text-white px-8 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-all duration-300 text-lg" @onclick="StartDetection" disabled="@isDetecting">
+                        @if (isDetecting)
+                        {
+                            <i class="fa fa-spinner fa-spin mr-2"></i><text>检测中...</text>
+                        }
+                        else
+                        {
+                            <i class="fa fa-search mr-2"></i><text>@(showDetectionResult ? "重新检测" : "开始检测")</text>
+                        }
+                    </button>
+                    <p class="text-gray-600 text-sm mt-3">
+                        <i class="fa fa-info-circle mr-1"></i>
+                        免费用户每日可检测1次，会员用户不限次数
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 我的植物模块 -->
+    <section id="my-plants" class="mb-12 scroll-mt-20">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">我的植物</h2>
+        
+        <!-- 添加植物按钮 -->
+        <div class="mb-6">
+            <button class="bg-green-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-opacity-90 transition-all duration-300" @onclick="AddPlant">
+                <i class="fa fa-plus mr-2"></i>添加植物
+            </button>
+        </div>
+        
+        <!-- 植物卡片列表 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            @foreach (var plant in plants)
+            {
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    <div class="relative">
+                        <img src="@plant.ImageUrl" alt="@plant.Name" class="w-full h-48 object-cover">
+                        <div class="absolute top-3 right-3 bg-@(plant.HealthStatus == "健康" ? "green" : "yellow")-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                            @plant.HealthStatus
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-xl font-semibold text-gray-800">@plant.Name</h3>
+                            <div class="flex space-x-2">
+                                <button class="text-gray-400 hover:text-green-600 transition-colors">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="text-gray-400 hover:text-red-500 transition-colors">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-4">入手时间: @plant.AcquiredDate</p>
+                        
+                        <!-- 健康状态 -->
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm text-gray-600">健康状态</span>
+                                <span class="text-sm font-medium text-green-600">@plant.HealthStatus</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: @(plant.HealthScore)%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 养护提醒 -->
+                        <div class="flex justify-between text-sm">
+                            <div class="text-center">
+                                <i class="fa fa-tint text-blue-500 mb-1"></i>
+                                <p class="text-gray-600">浇水: @plant.NextWatering</p>
+                            </div>
+                            <div class="text-center">
+                                <i class="fa fa-cutlery text-yellow-500 mb-1"></i>
+                                <p class="text-gray-600">施肥: @plant.NextFertilizing</p>
+                            </div>
+                            <div class="text-center">
+                                <i class="fa fa-scissors text-purple-500 mb-1"></i>
+                                <p class="text-gray-600">修剪: @plant.NextPruning</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            
+            <!-- 添加植物卡片 -->
+            <div class="bg-white rounded-xl border-2 border-dashed border-gray-300 p-6 flex flex-col items-center justify-center h-80 cursor-pointer hover:border-green-600 transition-colors" @onclick="AddPlant">
+                <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                    <i class="fa fa-plus text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">添加新植物</h3>
+                <p class="text-gray-600 text-center">创建植物数字档案，开始智能养护</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 智能提醒模块 -->
+    <section id="reminders" class="mb-12 scroll-mt-20">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">智能提醒</h2>
+        
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="p-8">
+                <!-- 今日提醒 -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">今日提醒</h3>
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
+                            <div class="flex items-center mb-4 md:mb-0">
+                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                                    <i class="fa fa-tint text-blue-500 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">浇水提醒</h4>
+                                    <p class="text-gray-600">薄荷、蕨类植物需要浇水</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-800 hover:bg-gray-50 transition-colors">
+                                    稍后提醒
+                                </button>
+                                <button class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                    标记完成
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 知识社区模块 -->
+    <section id="knowledge" class="mb-12 scroll-mt-20">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">知识社区</h2>
+        
+        <!-- 社区分类 -->
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button class="px-4 py-2 bg-green-600 text-white rounded-full">全部</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">问答</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">案例</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">多肉植物</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">花卉</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">室内植物</button>
+        </div>
+        
+        <!-- 社区内容 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach (var post in communityPosts)
+            {
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    @if (!string.IsNullOrEmpty(post.ImageUrl))
+                    {
+                        <img src="@post.ImageUrl" alt="@post.Title" class="w-full h-48 object-cover">
+                    }
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="@post.AuthorAvatar" alt="@post.Author" class="w-10 h-10 rounded-full object-cover mr-3">
+                            <div>
+                                <h4 class="font-medium text-gray-800">@post.Author</h4>
+                                <p class="text-xs text-gray-600">@post.TimeAgo</p>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-3 text-gray-800">@post.Title</h3>
+                        <p class="text-gray-600 mb-4">@post.Excerpt</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <span class="flex items-center text-gray-600">
+                                    <i class="fa fa-thumbs-up mr-1"></i> @post.Likes
+                                </span>
+                                <span class="flex items-center text-gray-600">
+                                    <i class="fa fa-comment mr-1"></i> @post.Comments
+                                </span>
+                            </div>
+                            <span class="bg-@(post.CategoryColor)-100 text-@(post.CategoryColor)-800 text-xs font-medium px-2 py-1 rounded-full">@post.Category</span>
+                        </div>
+                    </div>
+                </div>
+            }
+            
+            <!-- 发布按钮 -->
+            <div class="bg-white rounded-xl border-2 border-dashed border-gray-300 p-6 flex flex-col items-center justify-center h-64 cursor-pointer hover:border-green-600 transition-colors">
+                <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                    <i class="fa fa-plus text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">发布内容</h3>
+                <p class="text-gray-600 text-center">分享你的种植经验，或提出问题寻求帮助</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 商城模块 -->
+    <section id="shop" class="mb-12 scroll-mt-20">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">智能商城</h2>
+        
+        <!-- 商品分类 -->
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button class="px-4 py-2 bg-green-600 text-white rounded-full">全部</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">肥料</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">药剂</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">土壤</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">工具</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">传感器</button>
+            <button class="px-4 py-2 bg-white text-gray-800 rounded-full hover:bg-gray-50 transition-colors">植物</button>
+        </div>
+        
+        <!-- 商品列表 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach (var product in products)
+            {
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    <div class="relative">
+                        <img src="@product.ImageUrl" alt="@product.Name" class="w-full h-48 object-cover">
+                        @if (!string.IsNullOrEmpty(product.Badge))
+                        {
+                            <div class="absolute top-3 right-3 bg-@(product.BadgeColor)-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                                @product.Badge
+                            </div>
+                        }
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-semibold mb-2 text-gray-800">@product.Name</h3>
+                        <div class="flex items-center mb-3">
+                            <div class="flex text-yellow-400">
+                                @for (int i = 0; i < product.Rating; i++)
+                                {
+                                    <i class="fa fa-star"></i>
+                                }
+                                @if (product.Rating < 5)
+                                {
+                                    <i class="fa fa-star-o"></i>
+                                }
+                            </div>
+                            <span class="text-sm text-gray-600 ml-2">(@product.Reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-orange-500 font-semibold text-xl">¥@product.Price</span>
+                            <button class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center hover:bg-opacity-90 transition-colors">
+                                <i class="fa fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- 会员中心模块 -->
+    <section id="member" class="mb-12 scroll-mt-20">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">会员中心</h2>
+        
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="p-8">
+                <!-- 会员状态 -->
+                <div class="flex flex-col md:flex-row items-center justify-between mb-8">
+                    <div class="flex items-center mb-6 md:mb-0">
+                        <img src="https://via.placeholder.com/80" alt="用户头像" class="w-20 h-20 rounded-full object-cover border-4 border-green-600 mr-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-1">植物爱好者</h3>
+                            <div class="flex items-center">
+                                <span class="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded-full mr-3">普通用户</span>
+                                <span class="text-gray-600">会员积分: 120</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="bg-green-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-opacity-90 transition-all duration-300">
+                        <i class="fa fa-crown mr-2"></i>立即开通会员
+                    </button>
+                </div>
+                
+                <!-- 会员权益 -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">会员权益</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- 权益卡片 1 -->
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                                <i class="fa fa-search text-green-600 text-xl"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2 text-gray-800">无限检测</h4>
+                            <p class="text-gray-600 mb-3">每日无限次AI健康检测，高级病害识别</p>
+                            <div class="flex items-center">
+                                <span class="text-gray-400 line-through mr-2">免费: 1次/天</span>
+                                <span class="text-green-600 font-medium">会员: 不限</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 权益卡片 2 -->
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <div class="w-12 h-12 rounded-full bg-green-200 flex items-center justify-center mb-4">
+                                <i class="fa fa-line-chart text-green-500 text-xl"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2 text-gray-800">生长预测</h4>
+                            <p class="text-gray-600 mb-3">AI预测植物未来30天生长状态，提前预警异常</p>
+                            <div class="flex items-center">
+                                <span class="text-gray-400 line-through mr-2">免费: 不可用</span>
+                                <span class="text-green-500 font-medium">会员: 可用</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 权益卡片 3 -->
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-4">
+                                <i class="fa fa-user-md text-orange-500 text-xl"></i>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2 text-gray-800">专家答疑</h4>
+                            <p class="text-gray-600 mb-3">优先获得植物专家在线答疑服务</p>
+                            <div class="flex items-center">
+                                <span class="text-gray-400 line-through mr-2">免费: 排队等待</span>
+                                <span class="text-orange-500 font-medium">会员: 优先</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 会员套餐 -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">会员套餐</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- 月度会员 -->
+                        <div class="bg-white rounded-xl border-2 border-gray-200 p-6 hover:border-green-600 transition-colors">
+                            <div class="text-center mb-6">
+                                <h4 class="text-lg font-semibold text-gray-800 mb-2">月度会员</h4>
+                                <div class="flex items-center justify-center">
+                                    <span class="text-4xl font-bold text-gray-800">¥29</span>
+                                    <span class="text-gray-600 ml-1">/月</span>
+                                </div>
+                            </div>
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                                    <span class="text-gray-800">无限AI健康检测</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                                    <span class="text-gray-800">高级病害识别</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                                    <span class="text-gray-800">生长预测</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                                    <span class="text-gray-800">专家优先答疑</span>
+                                </li>
+                            </ul>
+                            <button class="bg-white text-green-600 border border-green-600 px-6 py-2 rounded-full shadow-sm hover:bg-green-600 hover:text-white transition-all duration-300 w-full">
+                                立即开通
+                            </button>
+                        </div>
+                        
+                        <!-- 年度会员 -->
+                        <div class="bg-green-50 rounded-xl border-2 border-green-600 p-6 relative">
+                            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                                <span class="bg-green-600 text-white text-xs font-medium px-3 py-1 rounded-full">最划算</span>
+                            </div>
+                            <div class="text-center mb-6">
+                                <h4 class="text-lg font-semibold text-gray-800 mb-2">年度会员</h4>
+                                <div class="flex items-center justify-center">
+                                    <span class="text-4xl font-bold text-green-600">¥199</span>
+                                    <span class="text-gray-600 ml-1">/年</span>
+                                </div>
+                                <p class="text-gray-600 text-sm mt-1">相当于¥16.6/月，节省42%</p>
+                            </div>
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                                    <span class="text-gray-800">无限AI健康检测</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                                    <span class="text-gray-800">高级病害识别</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                                    <span class="text-gray-800">生长预测</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                                    <span class="text-gray-800">专家优先答疑</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                                    <span class="text-gray-800">专属客服</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                                    <span class="text-gray-800">商城优惠券</span>
+                                </li>
+                            </ul>
+                            <button class="bg-green-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-opacity-90 transition-all duration-300 w-full">
+                                立即开通
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
 
 @code {
     private IBrowserFile? selectedFile;
-    private string? uploadMessage;
+    private string? previewImageUrl;
+    private bool showDetectionResult = false;
+    private bool isDetecting = false;
+
+    // Sample data for plants
+    private List<PlantModel> plants = new List<PlantModel>
+    {
+        new PlantModel { Name = "薄荷", ImageUrl = "https://via.placeholder.com/300x200?text=Mint", HealthStatus = "健康", HealthScore = 85, AcquiredDate = "2025-06-15", NextWatering = "明天", NextFertilizing = "7天后", NextPruning = "14天后" },
+        new PlantModel { Name = "多肉植物", ImageUrl = "https://via.placeholder.com/300x200?text=Succulent", HealthStatus = "注意", HealthScore = 65, AcquiredDate = "2025-05-20", NextWatering = "3天后", NextFertilizing = "10天后", NextPruning = "15天后" },
+        new PlantModel { Name = "蕨类植物", ImageUrl = "https://via.placeholder.com/300x200?text=Fern", HealthStatus = "健康", HealthScore = 90, AcquiredDate = "2025-04-10", NextWatering = "明天", NextFertilizing = "10天后", NextPruning = "20天后" }
+    };
+
+    // Sample data for community posts
+    private List<CommunityPostModel> communityPosts = new List<CommunityPostModel>
+    {
+        new CommunityPostModel { Title = "多肉植物叶子发黄怎么办？", Author = "多肉植物爱好者", AuthorAvatar = "https://via.placeholder.com/40", TimeAgo = "2小时前", Excerpt = "我的多肉植物最近叶子发黄，不知道是什么原因...", Likes = 24, Comments = 8, Category = "问答", CategoryColor = "green" },
+        new CommunityPostModel { Title = "如何识别和防治植物叶斑病", Author = "植物医生", AuthorAvatar = "https://via.placeholder.com/40", TimeAgo = "昨天", Excerpt = "叶斑病是常见的植物病害，本文将介绍如何识别...", Likes = 56, Comments = 12, Category = "教程", CategoryColor = "blue", ImageUrl = "https://via.placeholder.com/300x200?text=Leaf+Disease" },
+        new CommunityPostModel { Title = "我的薄荷种植成功经验分享", Author = "香草爱好者", AuthorAvatar = "https://via.placeholder.com/40", TimeAgo = "3天前", Excerpt = "分享一下我种植薄荷的经验，从播种到收获...", Likes = 89, Comments = 24, Category = "经验", CategoryColor = "purple", ImageUrl = "https://via.placeholder.com/300x200?text=Mint+Garden" }
+    };
+
+    // Sample data for products
+    private List<ProductModel> products = new List<ProductModel>
+    {
+        new ProductModel { Name = "有机液体肥料", ImageUrl = "https://via.placeholder.com/300x200?text=Fertilizer", Price = "29.90", Rating = 4, Reviews = 124, Badge = "热销", BadgeColor = "red" },
+        new ProductModel { Name = "多肉植物组合", ImageUrl = "https://via.placeholder.com/300x200?text=Succulents", Price = "49.90", Rating = 4, Reviews = 86, Badge = "新品", BadgeColor = "green" },
+        new ProductModel { Name = "稀有多肉植物", ImageUrl = "https://via.placeholder.com/300x200?text=Rare+Succulent", Price = "39.90", Rating = 5, Reviews = 52 },
+        new ProductModel { Name = "多肉植物套装", ImageUrl = "https://via.placeholder.com/300x200?text=Plant+Set", Price = "59.90", Rating = 4, Reviews = 98, Badge = "优惠", BadgeColor = "yellow" }
+    };
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
         selectedFile = e.File;
-        uploadMessage = $"已选择文件: {selectedFile.Name}";
+        
+        // Create preview URL
+        var imageStream = selectedFile.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+        var buffer = new byte[selectedFile.Size];
+        await imageStream.ReadAsync(buffer);
+        var base64 = Convert.ToBase64String(buffer);
+        previewImageUrl = $"data:{selectedFile.ContentType};base64,{base64}";
+        
         StateHasChanged();
     }
 
-    private void StartDetection()
+    private async Task TakePhoto()
     {
-        if (selectedFile != null)
+        await JSRuntime.InvokeVoidAsync("alert", "拍照功能需要访问您的摄像头，在实际应用中将调用设备相机");
+    }
+
+    private async Task StartDetection()
+    {
+        if (string.IsNullOrEmpty(previewImageUrl))
         {
-            uploadMessage = "开始检测植物健康状况...";
+            await JSRuntime.InvokeVoidAsync("alert", "请先上传或拍摄植物照片");
+            return;
         }
-        else
+
+        isDetecting = true;
+        StateHasChanged();
+
+        // Simulate detection process
+        await Task.Delay(2000);
+
+        showDetectionResult = true;
+        isDetecting = false;
+        StateHasChanged();
+
+        // Initialize chart
+        await JSRuntime.InvokeVoidAsync("initHealthScoreChart");
+    }
+
+    private async Task AddPlant()
+    {
+        await JSRuntime.InvokeVoidAsync("alert", "添加植物功能即将上线，敬请期待！");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
         {
-            uploadMessage = "请先上传植物照片";
+            // Add smooth scroll behavior
+            await JSRuntime.InvokeVoidAsync("eval", @"
+                document.querySelectorAll('a[href^=""#""]').forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+            ");
+
+            // Add Chart.js initialization function
+            await JSRuntime.InvokeVoidAsync("eval", @"
+                window.initHealthScoreChart = function() {
+                    const ctx = document.getElementById('health-score-chart');
+                    if (ctx) {
+                        const score = 85;
+                        new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                datasets: [{
+                                    data: [score, 100 - score],
+                                    backgroundColor: ['#4CAF50', '#E0E0E0'],
+                                    borderWidth: 0,
+                                    cutout: '80%'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: { enabled: false }
+                                }
+                            }
+                        });
+                    }
+                }
+            ");
         }
+    }
+
+    public class PlantModel
+    {
+        public string Name { get; set; } = "";
+        public string ImageUrl { get; set; } = "";
+        public string HealthStatus { get; set; } = "";
+        public int HealthScore { get; set; }
+        public string AcquiredDate { get; set; } = "";
+        public string NextWatering { get; set; } = "";
+        public string NextFertilizing { get; set; } = "";
+        public string NextPruning { get; set; } = "";
+    }
+
+    public class CommunityPostModel
+    {
+        public string Title { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string AuthorAvatar { get; set; } = "";
+        public string TimeAgo { get; set; } = "";
+        public string Excerpt { get; set; } = "";
+        public int Likes { get; set; }
+        public int Comments { get; set; }
+        public string Category { get; set; } = "";
+        public string CategoryColor { get; set; } = "";
+        public string? ImageUrl { get; set; }
+    }
+
+    public class ProductModel
+    {
+        public string Name { get; set; } = "";
+        public string ImageUrl { get; set; } = "";
+        public string Price { get; set; } = "";
+        public int Rating { get; set; }
+        public int Reviews { get; set; }
+        public string? Badge { get; set; }
+        public string? BadgeColor { get; set; }
     }
 }
