@@ -1,0 +1,70 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>植物健康检测</PageTitle>
+
+<div class="plant-health-container">
+    <header class="main-header">
+        <h1 class="app-title">植物健康检测</h1>
+        <nav class="nav-buttons">
+            <button class="nav-btn purple">我的植物</button>
+            <button class="nav-btn blue">知识社区</button>
+            <button class="nav-btn light-blue">连接钱包</button>
+            <button class="nav-btn yellow">开通会员</button>
+            <button class="nav-btn grey">AI 生成</button>
+        </nav>
+    </header>
+
+    <div class="upload-section">
+        <div class="upload-box">
+            <div class="upload-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+            </div>
+            <p class="upload-text">点击上传 或拖放植物照片</p>
+            <p class="upload-hint">支持 PNG, JPG 格式，图片越清晰，识别越准确</p>
+            <InputFile OnChange="HandleFileSelected" accept=".png,.jpg,.jpeg" class="file-input" />
+        </div>
+        <button class="detect-btn" @onclick="StartDetection">开始检测 (免费用户每日限1次)</button>
+    </div>
+
+    <div class="my-plants-section">
+        <h2 class="section-title">我的植物</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3 class="feature-title">植物档案</h3>
+                <p class="feature-description">记录您的每一株植物，包括它们的生长历程、健康状况和养护日志。</p>
+            </div>
+            <div class="feature-card">
+                <h3 class="feature-title">智能提醒</h3>
+                <p class="feature-description">根据植物种类和生长环境，智能提醒您浇水、施肥和修剪。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private IBrowserFile? selectedFile;
+    private string? uploadMessage;
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        uploadMessage = $"已选择文件: {selectedFile.Name}";
+        StateHasChanged();
+    }
+
+    private void StartDetection()
+    {
+        if (selectedFile != null)
+        {
+            uploadMessage = "开始检测植物健康状况...";
+        }
+        else
+        {
+            uploadMessage = "请先上传植物照片";
+        }
+    }
+}
