@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using PlantHealthCheck.Application.Commands;
 using PlantHealthCheck.Application.DTOs;
 using PlantHealthCheck.Domain.Entities;
@@ -9,10 +10,12 @@ namespace PlantHealthCheck.Application.Handlers;
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResponse>
 {
     private readonly IUserRepository _userRepository;
+    private readonly ILogger<RegisterCommandHandler> _logger;
 
-    public RegisterCommandHandler(IUserRepository userRepository)
+    public RegisterCommandHandler(IUserRepository userRepository, ILogger<RegisterCommandHandler> logger)
     {
         _userRepository = userRepository;
+        _logger = logger;
     }
 
     public async Task<RegisterResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -66,29 +69,24 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
         }
 
         // Check if username or email already exists
-        if (await _userRepository.ExistsAsync(request.Username, request.Email))
+        var existingByUsername = await _userRepository.GetByUsernameAsync(request.Username);
+        if (existingByUsername != null)
         {
-            // Check specifically which one exists
-            var existingByUsername = await _userRepository.GetByUsernameAsync(request.Username);
-            var existingByEmail = await _userRepository.GetByEmailAsync(request.Email);
-
-            if (existingByUsername != null)
+            return new RegisterResponse
             {
-                return new RegisterResponse
-                {
-                    Success = false,
-                    Message = "用户名已存在"
-                };
-            }
+                Success = false,
+                Message = "用户名已存在"
+            };
+        }
 
-            if (existingByEmail != null)
+        var existingByEmail = await _userRepository.GetByEmailAsync(request.Email);
+        if (existingByEmail != null)
+        {
+            return new RegisterResponse
             {
-                return new RegisterResponse
-                {
-                    Success = false,
-                    Message = "邮箱已被注册"
-                };
-            }
+                Success = false,
+                Message = "邮箱已被注册"
+            };
         }
 
         // Hash password
@@ -108,6 +106,9 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
         {
             var createdUser = await _userRepository.AddAsync(user);
 
+            _logger.LogInformation("User {Username} registered successfully with ID {UserId}", 
+                createdUser.Username, createdUser.Id);
+
             return new RegisterResponse
             {
                 Success = true,
@@ -120,8 +121,9 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
                 }
             };
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Error registering user {Username}", request.Username);
             return new RegisterResponse
             {
                 Success = false,
