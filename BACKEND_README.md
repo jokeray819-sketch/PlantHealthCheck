@@ -86,7 +86,45 @@ PlantHealthCheck/
 
 ## 快速开始
 
-### 1. 创建数据库
+### 方式一：使用 Docker Compose (推荐)
+
+这是最简单的方式，会自动启动 MySQL、Redis 和 RabbitMQ。
+
+```bash
+# 启动所有服务
+docker-compose up -d
+
+# 查看服务状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f
+
+# 停止所有服务
+docker-compose down
+
+# 停止并删除数据卷
+docker-compose down -v
+```
+
+服务启动后：
+- MySQL: localhost:3306 (用户: root, 密码: yourpassword)
+- Redis: localhost:6379
+- RabbitMQ: localhost:5672 (管理界面: http://localhost:15672, 用户: guest, 密码: guest)
+
+数据库和测试用户会自动创建。
+
+### 方式二：手动安装
+
+如果不使用 Docker，需要手动安装和配置各个服务。
+
+#### 1. 安装必要的服务
+
+- MySQL 8.0+
+- Redis 6.0+
+- RabbitMQ 3.8+
+
+#### 2. 创建数据库
 
 ```bash
 mysql -u root -p

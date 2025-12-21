@@ -13,11 +13,10 @@ USE plant_health_check;
 -- 插入测试用户
 -- 用户名: admin
 -- 密码: admin123
--- 使用 BCrypt 哈希
 INSERT INTO users (username, password_hash, email, phone, created_at, is_active)
 VALUES (
   'admin',
-  '$2a$11$8YvVzQKZWlYz6qJ5V5X4XeKGxvYJZ9YJXYVxZ9YJXYVxZ9YJXYVxZ',
+  '$2a$11$hY7AXOTPVCeC80SzHdLuveCNChdUBWHVZzwXkAcXMZyQFkINwwaoW',
   'admin@planthealthcheck.com',
   '13800138000',
   UTC_TIMESTAMP(),
@@ -29,7 +28,7 @@ VALUES (
 INSERT INTO users (username, password_hash, email, phone, created_at, is_active)
 VALUES (
   'testuser',
-  '$2a$11$9ZwAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYy',
+  '$2a$11$TMcdaEk6Z77kIM5DIk9KZunj46MAC9O8zzBSsINTFlgYXpCkVhOHO',
   'test@planthealthcheck.com',
   '13900139000',
   UTC_TIMESTAMP(),
