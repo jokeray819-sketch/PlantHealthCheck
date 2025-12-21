@@ -19,6 +19,49 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// 用户注册
+    /// </summary>
+    /// <param name="request">注册请求</param>
+    /// <returns>注册结果</returns>
+    [HttpPost("register")]
+    [ProducesResponseType(typeof(RegisterResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    {
+        try
+        {
+            var command = new RegisterCommand
+            {
+                Username = request.Username,
+                Password = request.Password,
+                Email = request.Email,
+                Phone = request.Phone
+            };
+
+            var result = await _mediator.Send(command);
+
+            if (result.Success)
+            {
+                _logger.LogInformation("User {Username} registered successfully", request.Username);
+                return Ok(result);
+            }
+
+            _logger.LogWarning("Failed registration attempt for user {Username}: {Message}", 
+                request.Username, result.Message);
+            return BadRequest(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during registration for user {Username}", request.Username);
+            return StatusCode(StatusCodes.Status500InternalServerError, 
+                new RegisterResponse
+                {
+                    Success = false,
+                    Message = "注册过程中发生错误"
+                });
+        }
+    }
+
+    /// <summary>
     /// 用户登录
     /// </summary>
     /// <param name="request">登录请求</param>
