@@ -11,6 +11,7 @@ USE plant_health_check;
 -- 应用 EF Core 迁移（通过 Infrastructure/Data/init.sql）
 
 -- 插入测试用户
+-- ⚠️ WARNING: These are TEST CREDENTIALS ONLY - DO NOT use in production!
 -- 用户名: admin
 -- 密码: admin123
 INSERT INTO users (username, password_hash, email, phone, created_at, is_active)

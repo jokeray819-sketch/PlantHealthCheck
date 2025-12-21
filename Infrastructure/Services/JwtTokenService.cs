@@ -19,8 +19,10 @@ public class JwtTokenService : IJwtTokenService
 
     public string GenerateToken(User user)
     {
-        var securityKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not configured")));
+        var secretKey = _configuration["Jwt:SecretKey"] 
+            ?? throw new InvalidOperationException("JWT SecretKey not configured");
+        
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]

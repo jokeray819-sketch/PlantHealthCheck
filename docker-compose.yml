@@ -5,7 +5,8 @@ services:
     image: mysql:8.0
     container_name: planthealthcheck-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: yourpassword
+      # WARNING: Change this password in production!
+      MYSQL_ROOT_PASSWORD: Dev_Password_2024!
       MYSQL_DATABASE: plant_health_check
       MYSQL_CHARACTER_SET_SERVER: utf8mb4
       MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
