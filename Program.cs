@@ -14,6 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers();
 
+// Add Blazor Server services
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
 // Configure MySQL Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -129,18 +133,31 @@ var app = builder.Build();
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
+    app.UseSwagger(c =>
+    {
+        c.RouteTemplate = "devops/swagger/{documentName}/swagger.json";
+    });
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Plant Health Check API v1");
-        c.RoutePrefix = string.Empty; // Set Swagger UI at app's root
+        c.SwaggerEndpoint("/devops/swagger/v1/swagger.json", "Plant Health Check API v1");
+        c.RoutePrefix = "devops/swagger"; // Set Swagger UI at devops/swagger
     });
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseCors("AllowAll");
+app.UseAntiforgery();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Map API Controllers with /api prefix
 app.MapControllers();
+
+// Map Blazor components
+app.MapRazorComponents<PlantHealthCheck.Components.App>()
+    .AddInteractiveServerRenderMode();
 
 app.Run();
