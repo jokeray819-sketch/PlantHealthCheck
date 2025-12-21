@@ -146,9 +146,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseAntiforgery();
 
 app.UseCors("AllowAll");
+app.UseAntiforgery();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
