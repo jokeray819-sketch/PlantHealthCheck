@@ -1,10 +1,10 @@
 # Plant Health Check 后端系统
 
-基于 .NET 10.0 的植物健康检查系统后端 API，使用 DDD（领域驱动设计）架构。
+基于 .NET 9.0 的植物健康检查系统后端 API，使用 DDD（领域驱动设计）架构。
 
 ## 技术栈
 
-- **.NET 10.0** - 核心框架
+- **.NET 9.0** - 核心框架
 - **Entity Framework Core** - ORM
 - **MySQL** - 数据库
 - **Redis** - 缓存
@@ -36,7 +36,7 @@ PlantHealthCheck/
 
 ## 环境要求
 
-- .NET 10.0 SDK
+- .NET 9.0 SDK
 - MySQL 8.0+
 - Redis 6.0+
 - RabbitMQ 3.8+
